@@ -1,64 +1,44 @@
-import router from './router'
-import store from './store'
-import { Message } from 'element-ui'
-import NProgress from 'nprogress' // progress bar
-import 'nprogress/nprogress.css' // progress bar style
-import { getToken } from '@/utils/auth' // get token from cookie
-import getPageTitle from '@/utils/get-page-title'
+/* 
+   逻辑：判断有没有token
+            有token:判断地址是否是login
+                                 是：阻止【next(false)】
+                                 否：放行
+            没有token:
+                    判断去的地址是否是白名单【不需要token的】
+                                  是的话则放行，
+                                  不是则跳转到登录页面
 
-NProgress.configure({ showSpinner: false }) // NProgress Configuration
-
-const whiteList = ['/login'] // no redirect whitelist
-
-router.beforeEach(async(to, from, next) => {
-  // start progress bar
+*/   
+import router from "@/router"
+import store from "@/store"
+import NProgress from "nprogress"
+import "nprogress/nprogress.css"
+//token
+//白名单
+const whiteList = ['/login','/404']
+router.beforeEach((to,from,next)=>{
   NProgress.start()
-
-  // set page title
-  document.title = getPageTitle(to.meta.title)
-
-  // determine whether the user has logged in
-  const hasToken = getToken()
-
-  if (hasToken) {
-    if (to.path === '/login') {
-      // if is logged in, redirect to the home page
-      next({ path: '/' })
-      NProgress.done()
-    } else {
-      const hasGetUserInfo = store.getters.name
-      if (hasGetUserInfo) {
-        next()
-      } else {
-        try {
-          // get user info
-          await store.dispatch('user/getInfo')
-
-          next()
-        } catch (error) {
-          // remove token and go to login page to re-login
-          await store.dispatch('user/resetToken')
-          Message.error(error || 'Has Error')
-          next(`/login?redirect=${to.path}`)
-          NProgress.done()
-        }
-      }
-    }
-  } else {
-    /* has no token*/
-
-    if (whiteList.indexOf(to.path) !== -1) {
-      // in the free login whitelist, go directly
+  if(store.getters.token){
+    console.log(1);
+     if(to.path === '/login'){
+       console.log(2);
+       next('/')
+     }else{
+       console.log(3);
+       next()
+     }
+  }else{
+    //判断去的是否是白名单
+    if(whiteList.includes(to.path)){
       next()
-    } else {
-      // other pages that do not have permission to access are redirected to the login page.
-      next(`/login?redirect=${to.path}`)
-      NProgress.done()
+    }else{
+      next('/login')
     }
   }
+  NProgress.done()
 })
-
-router.afterEach(() => {
-  // finish progress bar
+//后置守卫
+router.afterEach(()=>{
+  //关闭进度条
   NProgress.done()
 })
