@@ -1,5 +1,6 @@
 import Vue from 'vue'
-
+import {imageerror} from '@/directive'
+Vue.directive('imageerror',imageerror)
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
 import ElementUI from 'element-ui'
@@ -38,6 +39,7 @@ Vue.use(ElementUI, { locale })
 
 Vue.config.productionTip = false
 
+/* 注册全局指令 */
 new Vue({
   el: '#app',
   router,

@@ -16,15 +16,18 @@ import "nprogress/nprogress.css"
 //token
 //白名单
 const whiteList = ['/login','/404']
-router.beforeEach((to,from,next)=>{
+router.beforeEach(async (to,from,next)=>{
   NProgress.start()
   if(store.getters.token){
-    console.log(1);
+    
      if(to.path === '/login'){
-       console.log(2);
+       
        next('/')
      }else{
-       console.log(3);
+       if(!store.getters.username){
+          //获取数据
+         await store.dispatch('user/getUserInfo')
+       }
        next()
      }
   }else{
