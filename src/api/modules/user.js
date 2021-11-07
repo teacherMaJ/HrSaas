@@ -15,7 +15,7 @@ export default {
 }
  /* 获取用户资料 */
  export function getUserInfo(){
-     console.log(1.1);
+    
     return request({
         method:'post',
         url:"/sys/profile"

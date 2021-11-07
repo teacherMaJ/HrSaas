@@ -1,9 +1,7 @@
 <template>
   <div class="dashboard-container">
     <div class="app-container">
-      <h2>
-        员工
-      </h2>
+      <el-button type="primary" @click="$router.push('/import')">批量导入员工</el-button>
     </div>
   </div>
 </template>

@@ -14,7 +14,7 @@ const service = axios.create({
 service.interceptors.request.use(config => {
   // config 是请求的配置信息
   // 注入token
-  
+  console.log("$$$$");
   if (store.getters.token) {
     
     // 只有在有token的情况下 才有必要去检查时间戳是否超时
