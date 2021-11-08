@@ -15,7 +15,9 @@ import router from './router'
 
 import '@/icons' // icon
 import '@/permission' // permission control
-import commonTools from "@/components/commonTools"
+// import commonTools from "@/components/commonTools"
+/* 全局注册组件 */
+import componentRegister  from './utils/componentRegister'
 import * as API from "@/api"
 window.$API = API
 if (process.env.NODE_ENV === 'production') {
@@ -30,7 +32,8 @@ Vue.use(ElementUI, { locale })
 
 Vue.config.productionTip = false
 /* 注册全局组件 */
-Vue.component('commonTools',commonTools)
+Vue.use(componentRegister)
+// Vue.component('commonTools',commonTools)
 /* 注册全局指令 */
 new Vue({
   el: '#app',

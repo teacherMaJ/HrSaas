@@ -1,6 +1,8 @@
 <template>
   <div>
-      首页
+      <workCalendar>
+         添加
+      </workCalendar>
   </div>
 </template>
 
