@@ -15,18 +15,9 @@ import router from './router'
 
 import '@/icons' // icon
 import '@/permission' // permission control
-
+import commonTools from "@/components/commonTools"
 import * as API from "@/api"
-// Vue.prototype.$API = API
 window.$API = API
-/**
- * If you don't want to use mock-server
- * you want to use MockJs for mock api
- * you can execute: mockXHR()
- *
- * Currently MockJs will be used in the production environment,
- * please remove it before going online ! ! !
- */
 if (process.env.NODE_ENV === 'production') {
   const { mockXHR } = require('../mock')
   mockXHR()
@@ -38,7 +29,8 @@ Vue.use(ElementUI, { locale })
 // Vue.use(ElementUI)
 
 Vue.config.productionTip = false
-
+/* 注册全局组件 */
+Vue.component('commonTools',commonTools)
 /* 注册全局指令 */
 new Vue({
   el: '#app',
