@@ -103,7 +103,7 @@
                    <el-button type="text" size="mini">转正</el-button>
                    <el-button type="text" size="mini">调岗</el-button>
                    <el-button type="text" size="mini">离职</el-button>
-                   <el-button type="text" size="mini">角色</el-button>
+                   <el-button type="text" size="mini" @click="operationRole(row)">角色</el-button>
                    <el-button type="text" size="mini">删除</el-button>
                  </template>
             </el-table-column>
@@ -119,24 +119,39 @@
           </el-pagination>
         </el-row>
       </el-card>
+<!--        角色分配的弹出框-->
+      <el-dialog
+          :visible.sync="dialogTableVisible"
+          title="分配角色"
+      >
+        <el-checkbox-group v-model="roleIds">
+             <el-checkbox v-for="item in roleList" :key="item.id" :label="item.id" >{{item.name}}</el-checkbox>
+        </el-checkbox-group>
 
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
-import {getAll} from "@/api/modules/employees"
+import {getAll,getRoles,getRolesById} from "@/api/modules/employees"
 import {formatDate} from "@/filters"
 //引入枚举对象
 import EmployeeEnum from "@/api/constant/employees"
 export default {
   data(){
     return{
+      //角色数组
+      roleIds:[],
+      //弹出框的显示隐藏
+      dialogTableVisible:false,
       //总页数
       total:0,
       page:1,
       size:10,
-      userList:[]
+      userList:[],
+      //角色数据
+      roleList:[]
     }
   },
   mounted() {
@@ -190,6 +205,26 @@ export default {
     formatEmployment(row, column, cellValue, index){
     const obj =  EmployeeEnum.hireType.find(item =>item.id === cellValue)
       return obj ? obj.value : '未知'
+    },
+    //操作角色
+    operationRole(row){
+        this.getRoles()
+      //根据当前的id获取它所属的角色
+      this.getRoles2Id(row.id)
+    },
+    //获取所有的角色数据
+    async getRoles(){
+      //显示
+      this.dialogTableVisible = true
+      // 获取所有的角色
+      const res = await  getRoles({page:1,pagesize:10})
+      this.roleList = res.rows
+
+    },
+    //根据id获取角色值
+    async getRoles2Id(id){
+     const res = await  getRolesById(id)
+      console.log(res)
     }
   }
 }
