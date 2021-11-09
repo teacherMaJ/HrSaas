@@ -1,6 +1,6 @@
 import Vue from 'vue'
-import {imageerror} from '@/directive'
-Vue.directive('imageerror',imageerror)
+import {imagerror} from '@/directive'
+Vue.directive('imagerror',imagerror)
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
 import ElementUI from 'element-ui'
@@ -34,7 +34,11 @@ Vue.config.productionTip = false
 /* 注册全局组件 */
 Vue.use(componentRegister)
 // Vue.component('commonTools',commonTools)
-/* 注册全局指令 */
+//全局过滤器
+import * as filters from "@/filters"
+Object.keys(filters).forEach(key=>{
+  Vue.filter(key,filters[key])
+})
 new Vue({
   el: '#app',
   router,

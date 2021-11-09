@@ -17,53 +17,133 @@
               <el-button type="text" @click="handlExport">导出</el-button>
          </template>
       </commonTools>
-<!--      数据展示-->
-      <el-table
-        :data="tableData"
-        style="width: 100%">
-        <el-table-column
-          prop="date"
-          label="日期"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="name"
-          label="姓名"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="address"
-          label="地址">
-        </el-table-column>
-      </el-table>
+
+      <el-card>
+          <el-table
+              border
+              :data="userList"
+          >
+            <el-table-column
+              label="序号"
+              type="index"
+            >
+
+            </el-table-column>
+
+            <el-table-column
+              label="姓名"
+              prop="username"
+            >
+
+            </el-table-column>
+
+            <el-table-column
+              label="头像"
+            >
+               <template slot-scope="{row}">
+                 <img
+                   v-imagerror="require('@/assets/common/head.jpg')"
+                   :src="row.staffPhoto"
+                   alt=""
+                   style="width: 100px;height: 100px;border-radius: 50%;"
+                 >
+               </template>
+            </el-table-column>
+
+            <el-table-column
+              label="工号"
+              prop="workNumber"
+            >
+
+            </el-table-column>
+
+            <el-table-column
+              label="聘用形式"
+              prop="formOfEmployment"
+              :formatter="formatEmployment"
+            >
+
+            </el-table-column>
+
+            <el-table-column
+              label="部门"
+              prop="departmentName"
+            >
+
+            </el-table-column>
+
+            <el-table-column
+              label="入职日期"
+              prop="timeOfEntry"
+            >
+                <template slot-scope="{row}">
+                   {{row.timeOfEntry | formatDate}}
+                </template>
+            </el-table-column>
+
+            <el-table-column
+              label="账户状态"
+              prop="enableState"
+              align="center"
+            >
+                 <template slot-scope="{row}">
+                   <el-switch
+                     :value="row.enableState === 1"
+                   >
+                   </el-switch>
+                 </template>
+            </el-table-column>
+
+            <el-table-column
+              label="操作"
+              width="300px"
+            >
+                 <template slot-scope="{row}">
+                   <el-button type="text" size="mini">查看</el-button>
+                   <el-button type="text" size="mini">转正</el-button>
+                   <el-button type="text" size="mini">调岗</el-button>
+                   <el-button type="text" size="mini">离职</el-button>
+                   <el-button type="text" size="mini">角色</el-button>
+                   <el-button type="text" size="mini">删除</el-button>
+                 </template>
+            </el-table-column>
+          </el-table>
+
+        <el-row type="flex" justify="center">
+          <el-pagination
+            background
+            layout="prev, pager, next"
+            :total="total"
+            @current-change="handlePage"
+          >
+          </el-pagination>
+        </el-row>
+      </el-card>
+
     </div>
   </div>
 </template>
 
 <script>
+import {getAll} from "@/api/modules/employees"
+import {formatDate} from "@/filters"
+//引入枚举对象
+import EmployeeEnum from "@/api/constant/employees"
 export default {
   data(){
     return{
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      //总页数
+      total:0,
+      page:1,
+      size:10,
+      userList:[]
     }
   },
+  mounted() {
+    this.getUserList()
+  },
   methods:{
+    //数据导出
     handlExport(){
       import("@/vendor/Export2Excel").then(excel=>{
         //导出数据的表头
@@ -85,6 +165,7 @@ export default {
 
       })
     },
+    //筛选导出的数据
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => {
         if (j === 'timestamp') {
@@ -93,6 +174,22 @@ export default {
           return v[j]
         }
       }))
+    },
+    //获取所有员工
+   async getUserList(){
+     const res = await getAll({page:this.page,size:this.size})
+     this.userList = res.rows
+     this.total = res.total
+    },
+    //  分页数据发生改变
+    handlePage(page){
+      this.page = page
+      this.getUserList()
+    },
+    //用于表格格式话数据
+    formatEmployment(row, column, cellValue, index){
+    const obj =  EmployeeEnum.hireType.find(item =>item.id === cellValue)
+      return obj ? obj.value : '未知'
     }
   }
 }
