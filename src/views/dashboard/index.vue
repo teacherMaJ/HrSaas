@@ -1,20 +1,23 @@
 <template>
-  <el-card class="box">
-    
-  </el-card>
-
+   <div class="dashboard">
+     <PanelGroup></PanelGroup>
+   </div>
 </template>
 
-<script type="text/ecmascript-6">
-  export default {
-  }
+<script>
+import PanelGroup from "./components/PanelGroup"
+export default {
+  name:'',
+  data(){
+    return{
+
+    }
+  },
+  components:{PanelGroup}
+}
 </script>
 
-<style scoped>
+<style>
 
-::v-deep.box{
-  width: 200px;
-  height: 200px;
-  margin-left: 10px;
-}
+
 </style>

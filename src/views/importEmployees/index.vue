@@ -21,15 +21,16 @@
       },
       methods:{
           handleSuccess({header,results}){
+
             //向后端接口提交的数据是results中的数据，需要将中文字段转为英文字段
             /* 1.先设置一个对照关系 */
-           
+
              const userRelations = {
                     '姓名': 'username',
                     '年龄': 'age',
                     '民族': 'nation',
                     '日期': 'date'
-                    
+
               }
               /* 2.遍历ruesult */
               const arr = []
@@ -41,12 +42,24 @@
                       }else{
                           obj[userRelations[key]] =  item[key]
                       }
-                       
+
 
                   })
                 arr.push(obj)
               })
               /* 3.发请求带着arr的数据 */
+            arr.forEach(item=>{
+              Object.keys(item).forEach(k=>{
+                if(k ==='age'){
+                  if(item[k] ==='王五'){
+                    this.$message.error('名字重复')
+                    return
+
+
+                  }
+                }
+              })
+            })
               console.log(arr);
           },
           /* 定义日期格式化函数 */
@@ -67,5 +80,5 @@
 
 <style scoped>
 
- 
+
 </style>
